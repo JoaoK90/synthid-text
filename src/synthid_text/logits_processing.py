@@ -164,7 +164,7 @@ class SynthIDLogitsProcessor(transformers.LogitsProcessor):
     # Hash the keys to a string to be used as initialization vector (IV)
     # for the hash function. Very important to have an unpredictable IV.
     self.hash_iv = hashlib.sha256(
-        self.keys.to(torch.long).numpy().tobytes()
+        self.keys.to(dtype=torch.long, device="cpu").numpy().tobytes()
     ).digest()
 
     # Assuming that the platform supports int64.

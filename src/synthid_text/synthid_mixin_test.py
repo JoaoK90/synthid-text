@@ -54,7 +54,7 @@ class MockSynthIDModel(synthid_mixin.SynthIDSparseTopKMixin):
       **kwargs,
   ) -> transformers_utils.ModelOutput:
     return transformers_utils.ModelOutput(
-        logits=torch.ones(x.shape[0], 5, 7),
+        logits=torch.ones(x.shape[0], 5, 7, device=x.device),
     )
 
 
@@ -80,7 +80,10 @@ class SynthidMixinTest(absltest.TestCase):
       logits_warper = synthid_model._get_logits_warper(generation_config)
 
       synthid_model._sample(
-          input_ids=torch.ones(3, 11, dtype=torch.long),
+          input_ids=torch.ones(
+            3, 11, dtype=torch.long,
+            device=synthid_mixin.DEFAULT_WATERMARKING_CONFIG["device"],
+          ),
           logits_processor=transformers.LogitsProcessorList(),
           stopping_criteria=transformers.StoppingCriteriaList(
               [lambda *_: True]
